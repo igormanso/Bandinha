@@ -20,7 +20,7 @@ header{
 }
 
 .playlist{
-  padding-bottom:120px;
+  padding-bottom:180px;
 }
 
 .track{
@@ -32,15 +32,15 @@ header{
 .player{
   position:fixed;
   bottom:0;
+  left:0;
   width:100%;
   background:#181818;
-  padding:15px;
+  padding:15px 15px 30px 15px; /* espaço extra */
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:10px;
   box-shadow:0 -5px 20px rgba(0,0,0,0.5);
-
 }
 
 button{
@@ -93,9 +93,13 @@ var current = 0;
 var audio = document.getElementById("audio");
 
 function playMusic(index){
-current = index;
-audio.src = playlist[index];
-audio.play();
+  current = index;
+  audio.src = playlist[index];
+  audio.load();
+  audio.play().catch(function(e){
+    console.log("Erro ao tocar:", e);
+  });
+
 }
 
 audio.addEventListener("ended", function(){
@@ -106,11 +110,15 @@ playMusic(current);
 });
 
 function share(){
-navigator.share({
-title: "Bandinha EJC",
-url: window.location.href
-});
-}
+  if (navigator.share) {
+    navigator.share({
+      title: "Bandinha EJC",
+      url: window.location.href
+    });
+  } else {
+    alert("Compartilhamento não suportado neste navegador.");
+  }
+
 
 </script>
 
