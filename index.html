@@ -2,17 +2,41 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Bandinha EJC Músicas</title>
+<title>Bandinha EJC Music</title>
+
 <style>
 body{
   background:#121212;
   color:white;
   font-family:Arial;
+  margin:0;
   text-align:center;
 }
-.music-player{
-  margin-top:40px;
+
+header{
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
 }
+
+.playlist{
+  padding-bottom:120px;
+}
+
+.track{
+  padding:15px;
+  border-bottom:1px solid #333;
+  cursor:pointer;
+}
+
+.player{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#181818;
+  padding:15px;
+}
+
 button{
   padding:10px 20px;
   background:#1DB954;
@@ -25,21 +49,64 @@ button{
 
 <body>
 
-<h1>🎧 Bandinha EJC Music</h1>
+<header>🎧 Bandinha EJC Music</header>
 
-<div class="music-player">
-  <p> Confiança</p>
-  <audio controls>
-    <source src="musica1.mp3" type="audio/mpeg">
-  </audio>
+<img src="capa.jpg" width="200">
+
+<div class="playlist">
+
+<div class="track" onclick="playMusic(0)">
+musica1
 </div>
 
-<div class="music-player">
-  <p>Minha Música 2</p>
-  <audio controls>
-    <source src="musica1.mp3" type="audio/mpeg">
-  </audio>
+<div class="track" onclick="playMusic(1)">
+musica2
 </div>
+
+<div class="track" onclick="playMusic(2)">
+musica3
+</div>
+
+</div>
+
+<div class="player">
+<audio id="audio" controls style="width:90%"></audio>
+<br><br>
+<button onclick="share()">Compartilhar</button>
+</div>
+
+<script>
+
+var playlist = [
+"musica1.mp3",
+"musica2.mp3"
+"musica3.mp3"
+];
+
+var current = 0;
+var audio = document.getElementById("audio");
+
+function playMusic(index){
+current = index;
+audio.src = playlist[index];
+audio.play();
+}
+
+audio.addEventListener("ended", function(){
+current++;
+if(current < playlist.length){
+playMusic(current);
+}
+});
+
+function share(){
+navigator.share({
+title: "Bandinha EJC",
+url: window.location.href
+});
+}
+
+</script>
 
 </body>
 </html>
