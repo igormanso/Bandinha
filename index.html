@@ -153,6 +153,7 @@ header{
 <div class="player-top">
 <img src="capa.jpeg" id="cover">
 <div class="music-info">
+<button class="share-btn" onclick="share()">⤴</button>
 <div class="music-title" id="musicTitle">Selecione uma música</div>
 </div>
 </div>
@@ -182,9 +183,9 @@ header{
 <script>
 
 var playlist = [
-{name:"musica1", file:"musica1.mp3"},
-{name:"musica2", file:"musica2.mp3"},
-{name:"musica3", file:"musica3.mp3"}
+  {name:"musica1", file:"musica1.mp3"},
+  {name:"musica2", file:"musica2.mp3"},
+  {name:"musica3", file:"musica3.mp3"}
 ];
 
 var current = 0;
@@ -195,6 +196,7 @@ var musicTitle = document.getElementById("musicTitle");
 var playBtn = document.getElementById("playBtn");
 var cover = document.getElementById("cover");
 
+/* TOCAR MÚSICA */
 function playMusic(index){
   current = index;
   audio.src = playlist[index].file;
@@ -204,11 +206,11 @@ function playMusic(index){
   cover.classList.add("rotating");
 }
 
+/* PLAY / PAUSE */
 function togglePlay(){
 
-  // Se ainda não tem música carregada
+  // Se nenhuma música foi carregada ainda
   if(!audio.src || audio.src === window.location.href){
-
     current = 0;
     audio.src = playlist[0].file;
     musicTitle.innerText = playlist[0].name;
@@ -223,30 +225,36 @@ function togglePlay(){
     playBtn.innerText = "▶";
     cover.classList.remove("rotating");
   }
-
 }
 
+/* PRÓXIMA */
 function next(){
   current++;
   if(current >= playlist.length) current = 0;
   playMusic(current);
 }
 
+/* ANTERIOR */
 function prev(){
   current--;
   if(current < 0) current = playlist.length - 1;
   playMusic(current);
 }
 
+/* PROGRESSO */
 audio.addEventListener("timeupdate", function(){
-  var progressPercent = (audio.currentTime / audio.duration) * 100;
-  progressBar.style.width = progressPercent + "%";
-  progressDot.style.left = progressPercent + "%";
+  if(audio.duration){
 
-  document.getElementById("currentTime").innerText = formatTime(audio.currentTime);
-  document.getElementById("duration").innerText = formatTime(audio.duration);
+    var progressPercent = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = progressPercent + "%";
+    progressDot.style.left = progressPercent + "%";
+
+    document.getElementById("currentTime").innerText = formatTime(audio.currentTime);
+    document.getElementById("duration").innerText = formatTime(audio.duration);
+  }
 });
 
+/* CLICAR NA BARRA */
 function setProgress(e){
   var width = this.clientWidth;
   var clickX = e.offsetX;
@@ -254,16 +262,27 @@ function setProgress(e){
   audio.currentTime = (clickX / width) * duration;
 }
 
+/* FORMATAR TEMPO */
 function formatTime(seconds){
+  if(!seconds) return "0:00";
   var min = Math.floor(seconds / 60);
   var sec = Math.floor(seconds % 60);
   if(sec < 10) sec = "0" + sec;
   return min + ":" + sec;
 }
 
+/* AUTO PRÓXIMA */
 audio.addEventListener("ended", next);
 
-</script>
-
-</body>
-</html>
+/* COMPARTILHAR */
+function share(){
+  if (navigator.share) {
+    navigator.share({
+      title: "Bandinha EJC Music",
+      text: "Escuta minha música 🎧",
+      url: window.location.href
+    });
+  } else {
+    alert("Compartilhamento não suportado neste navegador.");
+  }
+}
