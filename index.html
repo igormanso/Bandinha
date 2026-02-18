@@ -205,15 +205,25 @@ function playMusic(index){
 }
 
 function togglePlay(){
+
+  // Se ainda não tem música carregada
+  if(!audio.src || audio.src === window.location.href){
+
+    current = 0;
+    audio.src = playlist[0].file;
+    musicTitle.innerText = playlist[0].name;
+  }
+
   if(audio.paused){
     audio.play();
     playBtn.innerText = "⏸";
     cover.classList.add("rotating");
-  }else{
+  } else {
     audio.pause();
     playBtn.innerText = "▶";
     cover.classList.remove("rotating");
   }
+
 }
 
 function next(){
